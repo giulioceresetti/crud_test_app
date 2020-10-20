@@ -1,20 +1,30 @@
 import 'package:crud_test_app/dao/spesa_dao.dart';
-import 'package:crud_test_app/model/elemento.dart';
 import 'package:crud_test_app/model/spesa.dart';
+
+import 'items.dart';
 
 class GestioneElemento {
   SpesaDAO spesaDao;
-
+  static GestioneElemento gest = null;
   GestioneElemento() {
     spesaDao = new SpesaDAO();
   }
 
-  List<Spesa> getSpese() {
-    return spesaDao.getList();
+ static GestioneElemento getInstance() {
+    if (gest ==null) {
+      gest = GestioneElemento();
+    }
+    return gest;
   }
 
- String addSpesa(Spesa spesa) {
-    String error ="ok";
+  List<ListItem> getSpese() {
+    var items = spesaDao.getList();
+    return List<ListItem>.generate(items.length,
+        (i) => MessageItem(items[i].nomeMarket, items[i].nomeLista));
+  }
+
+  String addSpesa(Spesa spesa) {
+    String error = "ok";
     try {
       spesaDao.addSpesa(spesa);
     } catch (Exception) {
@@ -22,6 +32,4 @@ class GestioneElemento {
     }
     return error;
   }
-
-
 }
