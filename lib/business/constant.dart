@@ -1,4 +1,3 @@
 class Constants {
-
-  static String TITLE = "SpesaAPP";
+  static final String title = "SpesaAPP";
 }

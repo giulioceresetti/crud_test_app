@@ -1,7 +1,8 @@
 // Define a custom Form widget.
-import 'package:crud_test_app/business/gestione_elemento.dart';
-import 'package:crud_test_app/model/spesa.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 class AddSpesaPage extends StatefulWidget {
   final String title;
@@ -17,9 +18,24 @@ class AddSpesaPageState extends State<AddSpesaPage> {
   String nome;
   String superMark;
   final String title;
+
   AddSpesaPageState(this.title);
+
   @override
   Widget build(BuildContext context) {
+    CollectionReference spesa = FirebaseFirestore.instance.collection('spesa');
+
+    Future<String> addSpesa() {
+      // Call the user's CollectionReference to add a new user
+      return spesa
+          .add({
+            'nome': nome, // John Doe
+            'supermercato': superMark
+          })
+          .then((value){ return "spesa aggiunta";})
+          .catchError((error) => print("Aggiunta spesa fallita: $error"));
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -36,7 +52,9 @@ class AddSpesaPageState extends State<AddSpesaPage> {
                   nome = value;
                 }
                 return null;
-              },
+              },onChanged: (value) {
+                nome = value;
+            },
             ),
             TextFormField(
               validator: (value) {
@@ -46,15 +64,16 @@ class AddSpesaPageState extends State<AddSpesaPage> {
                   superMark = value;
                 }
                 return null;
-              },
+              },onChanged: (val) {
+                superMark = val;
+            }
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: FlatButton(
                 onPressed: () {
-                  print(nome);
-                  var text = GestioneElemento.getInstance()
-                      .addSpesa(Spesa(nome, superMark));
+                   addSpesa().then((value) => showToast(value,gravity:Toast.BOTTOM));
+
                   Navigator.pop(context);
                 },
                 child: Text("Aggiungi"),
@@ -65,4 +84,9 @@ class AddSpesaPageState extends State<AddSpesaPage> {
       ),
     );
   }
+  void showToast(String msg, {int duration, int gravity}) {
+    Toast.show(msg, context, duration: duration, gravity: gravity);
+  }
 }
+
+

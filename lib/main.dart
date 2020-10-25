@@ -1,8 +1,12 @@
 import 'package:crud_test_app/business/constant.dart';
 import 'package:crud_test_app/screen/list_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -12,7 +16,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: Constants.TITLE,
+      title: Constants.title,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -29,7 +33,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ListPage(title: Constants.TITLE ),
+      home: ListPage(title: Constants.title ),
       );
 
   }
